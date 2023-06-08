@@ -19,7 +19,7 @@
         (else 
             (iter-fun (+ a (* 2 b) (* 3 c)) a b (- count 1)))))
             
-;; Excercise 1.12
+;; Exercise 1.12
 
 (define (pascal r c)
     (cond
@@ -28,9 +28,9 @@
             (+ (pascal (- r 1) (- c 1)) (pascal (- r 1) c)))))
 
 
-;; Excercise 1.16 (TODO)
+;; Exercise 1.16 (TODO)
 
-;; Excercise 1.29
+;; Exercise 1.29
 
 (define (cube x) (* x x x))
 
@@ -52,7 +52,7 @@
             (else 2)) (yk k)))
     (* (/ h 3) (sum simpsons-term 0 inc n)))
 
-;; Excercise 1.30
+;; Exercise 1.30
 
 (define (sum-iter term a next b)
     (define (iter a result)
@@ -62,7 +62,7 @@
     (iter a 0))
 
 
-;; Excerise 1.32
+;; Exercise 1.32
 
 (define (factorial n)
  (if (= n 0) 
@@ -112,7 +112,7 @@
     (define (golden-ratio x)
         (fixed-point (lambda (y) (+ 1 (/ 1 x))) 1.0))
 
-;; Excercise 1.36
+;; Exercise 1.36
 
 (define (x-to-the-x y)
     (fixed-point (lambda (x) (/ (log y) (log x))) 10.0))
@@ -124,7 +124,7 @@
     (fixed-point (lambda (x) (average x (/ (log y) (log x)))) 10.0))
 
 
-;; Excercise 1.37
+;; Exercise 1.37
 ;; a
 
 (define (cont-frac n d k)
@@ -148,7 +148,7 @@
         (cont-frac-iter n d k k 0))
 
 
-;; Excercise 1.37
+;; Exercise 1.37
 
 (define (e-approx k)
     (cond 
@@ -185,9 +185,29 @@
     (lambda (x) 
         (/ (- (g (+ x dx)) (g x)) 
             dx)))
-            
+
 (define (newton-transformation g)
     (lambda (x) (- x (/ (g x) ((deriv g) x)))))
 
 (define (newtons-method g guess)
     (fixed-point (newton-transformation g) guess))
+
+(define (fixed-point-of-transform g transform guess)
+    (fixed-point (transform g) guess))
+
+(define (sqrt-damp-3 x)
+    (fixed-point-of-transform (lambda (y) (/ x y)) average-damp 1.0))
+
+;;;Exercise 1.40
+(define (cubic a b c)
+    (lambda (x)
+        (+ (* x x x) (* a x x) (* b x) c)))
+
+;;; How would you do this with a lambda not naming the func
+(newtons-method (cubic 1 2 3) 1)
+
+(newtons-method (lambda (x)
+        (+ (* x x x) (* 1 x x) (* 2 x) 3)) 1)
+
+
+E
