@@ -101,7 +101,8 @@
     (define (try guess counter)
         (let ((next (f guess))
                 (counter (+ counter 1)))
-            (display counter)
+            (display guess)
+            ;; (display counter)
             (newline)
             (if (close-enough? guess next)
                 next
@@ -113,8 +114,14 @@
 
 ;; Excercise 1.36
 
-(define (x-to-the-y y)
+(define (x-to-the-x y)
     (fixed-point (lambda (x) (/ (log y) (log x))) 10.0))
+
+(define (average x y)
+    (/ (+ x y) 2))
+
+(define (x-to-the-x-damp y)
+    (fixed-point (lambda (x) (average x (/ (log y) (log x)))) 10.0))
 
 
 ;; Excercise 1.37
@@ -154,3 +161,33 @@
                 (else 1)))
            3)
 
+;; define average damping
+(define (average-damp f)
+  (lambda (x) (average x (f x))))
+
+;; why doesn't ((average-damp x-to-the-x) 1000) act the same as (x-to-the-x-damp 1000)
+
+(define (square x)
+    (* x x))
+(define (cube x)
+    (* x x x))
+
+;; why does 1 vs 1.0 change the guess
+(define (sqrt-damp-1 x)
+    (fixed-point (lambda (y) (average y (/ x y))) 1.0))
+
+(define (sqrt-damp-2 x)
+    (fixed-point (average-damp (lambda (y) (/ x y))) 1.0))
+
+(define dx 0.00001)
+
+(define (deriv g)
+    (lambda (x) 
+        (/ (- (g (+ x dx)) (g x)) 
+            dx)))
+            
+(define (newton-transformation g)
+    (lambda (x) (- x (/ (g x) ((deriv g) x)))))
+
+(define (newtons-method g guess)
+    (fixed-point (newton-transformation g) guess))
