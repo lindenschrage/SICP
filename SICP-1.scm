@@ -210,4 +210,10 @@
         (+ (* x x x) (* 1 x x) (* 2 x) 3)) 1)
 
 
-E
+;; Exercise 1.41
+(define (double g)
+    (lambda (x)
+        (g (g x))))
+
+(trace double)
+(((double (double double)) inc) 5)
