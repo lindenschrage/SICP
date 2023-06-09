@@ -31,7 +31,6 @@
 ;; Exercise 1.16 (TODO)
 
 ;; Exercise 1.29
-
 (define (cube x) (* x x x))
 
 (define (inc n) (+ n 1))
@@ -53,7 +52,6 @@
     (* (/ h 3) (sum simpsons-term 0 inc n)))
 
 ;; Exercise 1.30
-
 (define (sum-iter term a next b)
     (define (iter a result)
         (if (> a b)
@@ -63,7 +61,6 @@
 
 
 ;; Exercise 1.32
-
 (define (factorial n)
  (if (= n 0) 
      1
@@ -113,7 +110,6 @@
         (fixed-point (lambda (y) (+ 1 (/ 1 x))) 1.0))
 
 ;; Exercise 1.36
-
 (define (x-to-the-x y)
     (fixed-point (lambda (x) (/ (log y) (log x))) 10.0))
 
@@ -126,7 +122,6 @@
 
 ;; Exercise 1.37
 ;; a
-
 (define (cont-frac n d k)
     (define (frac-recur i)
         (cond
@@ -135,8 +130,6 @@
     (frac-recur 1))
 
 ;;b
-
-
     (define (cont-frac-iter n d k i result)
         (cond
             ((= i 0) result)
@@ -149,7 +142,6 @@
 
 
 ;; Exercise 1.37
-
 (define (e-approx k)
     (cond 
         ((= (remainder k 3) 2) (/ (+ k 1) 1.5))
@@ -166,7 +158,6 @@
   (lambda (x) (average x (f x))))
 
 ;; why doesn't ((average-damp x-to-the-x) 1000) act the same as (x-to-the-x-damp 1000)
-
 (define (square x)
     (* x x))
 (define (cube x)
@@ -204,16 +195,44 @@
         (+ (* x x x) (* a x x) (* b x) c)))
 
 ;;; How would you do this with a lambda not naming the func
-(newtons-method (cubic 1 2 3) 1)
+;(newtons-method (cubic 1 2 3) 1)
 
-(newtons-method (lambda (x)
-        (+ (* x x x) (* 1 x x) (* 2 x) 3)) 1)
+;(newtons-method (lambda (x)
+;        (+ (* x x x) (* 1 x x) (* 2 x) 3)) 1)
 
-
+;; QUESTION: How does the x get defined in lambda functions? can their be multiple args?
 ;; Exercise 1.41
 (define (double g)
     (lambda (x)
         (g (g x))))
 
-(trace double)
+;(trace double)
 (((double (double double)) inc) 5)
+
+;;Exercise 1.42
+(define (compose f g)
+    (lambda (x)
+        (f (g x))))
+
+;;Exercise 1.42
+(define (repeated f n)
+    (define (repeated-inner f n counter)
+        (cond
+            ((= counter (- n 1)) (compose f f))
+            (else (compose f (repeated-inner f n (+ counter 1))))))
+    (repeated-inner f n 1))
+
+;;; QUESTION: HOW DO I DO EX 1.42 with lambda (i dont understand soln below)
+
+(define (repeated-1 f n)
+    (lambda (x)
+        (cond   
+            ((= n 0) x)
+            (else ((compose (repeated-1 f (- n 1)) f) x)))))
+
+(define (repeated-2 f n)
+    (cond
+     ((= n 1) f)
+     (else (compose f (repeated-2 f (- n 1))))))
+
+; ((repeated-2 square 2) 5)
