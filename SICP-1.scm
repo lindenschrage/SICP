@@ -255,6 +255,24 @@
         (average (f x) (f (+ x dx)) (f (- x dx)))))
 
   ;; QUESTION: how to do n smooth fold 
+
+  ;Exercise 1.45 TODO
+
+  ;Exercise 1.46
+
+  (define (iterative-improve good-enough? improve)
+    (lambda (guess)
+        (newline)
+        (display guess)
+        (cond
+            ((good-enough? guess) guess)
+            (else ((iterative-improve good-enough? improve) (improve guess))))))
+            
+    (define (sqrt-iterative-improve x)
+        ((iterative-improve 
+            (lambda (guess) (< (abs (- (square guess) x)) 0.001))
+            (lambda (guess) (average guess (/ x guess)))) 1.0))
+        
         
 
 
