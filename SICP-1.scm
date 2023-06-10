@@ -113,12 +113,23 @@
 (define (x-to-the-x y)
     (fixed-point (lambda (x) (/ (log y) (log x))) 10.0))
 
-(define (average x y)
-    (/ (+ x y) 2))
+(define (average-helper args sum count)
+    (if (null? args) 
+    (/ sum count)
+    (average-helper (cdr args) (+ sum (car args)) (+ 1 count))))
+
+(define (average . args)
+    (average-helper args 0 0))
+
+(define (sum-helper args)
+    (if (null? args) 0
+    (+ (car args) (sum-helper (cdr args)))))
+
+(define (sum . args)
+    (sum-helper args))
 
 (define (x-to-the-x-damp y)
     (fixed-point (lambda (x) (average x (/ (log y) (log x)))) 10.0))
-
 
 ;; Exercise 1.37
 ;; a
@@ -214,7 +225,7 @@
     (lambda (x)
         (f (g x))))
 
-;;Exercise 1.42
+;;Exercise 1.43
 (define (repeated f n)
     (define (repeated-inner f n counter)
         (cond
@@ -236,3 +247,16 @@
      (else (compose f (repeated-2 f (- n 1))))))
 
 ; ((repeated-2 square 2) 5)
+
+; Exercise 1.44
+
+(define (smooth f)
+    (lambda (x)
+        (average (f x) (f (+ x dx)) (f (- x dx)))))
+
+  ;; QUESTION: how to do n smooth fold 
+        
+
+
+
+
