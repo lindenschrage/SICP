@@ -65,7 +65,7 @@
            ( (< (* n d) 0) (cons (* -1 (abs (/ n g))) (abs (/ d g)) ) ) ) ) 
 
 ; Exercise 2.2
-(define (point x-point y-point)
+(define (make-point x-point y-point)
     (cons x-point y-point))
 
 (define (x-point p)
@@ -89,10 +89,45 @@
     (point (average (x-point (car segment)) (x-point (cdr segment)))
            (average (y-point (car segment)) (y-point (cdr segment)))))
 
-(define p1 (point 1 2))
-(define p2 (point 1 8))
+(define p1 (make-point 0 -5))
+(define p2 (make-point 4 2))
 (define seg (make-segment p1 p2))
 (define mid (midpoint-segment seg))
 
+
+; Exercise 2.3
+
+(define (make-rectangle bottom-left-p top-right-p)
+    (cons bottom-left-p top-right-p))
+
+(define (bottom-left-p rect)
+    (car rect))
+
+(define (top-right-p rect)
+    (cdr rect))
+
+(define (bottom-right-p rect)
+    (make-point (x-point (top-right-p rect)) (y-point (bottom-left-p rect)))) 
+
+(define (top-left-p rect)
+    (make-point (x-point (bottom-left-p rect)) (y-point (top-right-p rect)))) 
+
+(define (rec-height rect)
+    (abs (- (y-point (bottom-left-p rect)) (y-point (top-left-p rect)))))
+
+(define (rec-width rect)
+    (abs (- (x-point (bottom-left-p rect)) (x-point (bottom-right-p rect)))))
+
+(define (rec-perimeter rect)
+    (+ (* 2 (rec-width rect)) (* 2  (rec-height rect))))
+
+(define (rec-area rect)
+    (* (rec-width rect) (rec-height rect)))
+
+(define rec (make-rectangle p1 p2))
+(define bl (bottom-left-p rec))
+(define tr (top-right-p rec))
+(define br (bottom-right-p rec))
+(define tl (top-left-p rec))
 
 
