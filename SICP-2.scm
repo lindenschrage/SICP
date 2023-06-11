@@ -89,14 +89,13 @@
     (point (average (x-point (car segment)) (x-point (cdr segment)))
            (average (y-point (car segment)) (y-point (cdr segment)))))
 
-(define p1 (make-point 0 -5))
-(define p2 (make-point 4 2))
-(define seg (make-segment p1 p2))
-(define mid (midpoint-segment seg))
+;(define p1 (make-point 0 -5))
+;(define p2 (make-point 4 2))
+;(define seg (make-segment p1 p2))
+;(define mid (midpoint-segment seg))
 
 
 ; Exercise 2.3
-
 (define (make-rectangle bottom-left-p top-right-p)
     (cons bottom-left-p top-right-p))
 
@@ -124,10 +123,34 @@
 (define (rec-area rect)
     (* (rec-width rect) (rec-height rect)))
 
-(define rec (make-rectangle p1 p2))
-(define bl (bottom-left-p rec))
-(define tr (top-right-p rec))
-(define br (bottom-right-p rec))
-(define tl (top-left-p rec))
+;(define rec (make-rectangle p1 p2))
+;(define bl (bottom-left-p rec))
+;(define tr (top-right-p rec))
+;(define br (bottom-right-p rec))
+;(define tl (top-left-p rec))
 
+;QUESTION about 2.1.3 definition of cons
 
+; Practice 
+(define (cons-procedure x y)
+    (define (dispatch m)
+        (cond ((= m 0) x)
+              ((= m 1) y)
+              (else (error "not 0 or 1"))))
+    dispatch)
+
+(define (car-procuedure z) (z 0))
+(define (cdr-procuedure z) (z 1))
+
+;Exercise 2.4 (QUESTION)
+(define (cons-2 x y)
+    (lambda (m) (m x y)))
+
+(define (car-2 z)
+    (z (lambda (p q) p))) 
+
+(define (cdr-2 z)
+    (z (lambda (p q) q))) 
+
+(trace cons-2)
+(trace car-2)
