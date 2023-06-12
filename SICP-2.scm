@@ -51,18 +51,19 @@
 (define one-fourth (make-rat 1 4))
 (define two-fourths (make-rat 2 4))
 
-(define n1 (make-rat-improved -1 2))
-(define n2 (make-rat-improved -1 -2))
-(define n3 (make-rat-improved 1 -2))
-(define n4 (make-rat-improved 1 2))
 
 ; Exercise 2.1
-(define (make-rat n d)
+(define (make-rat-improved n d)
     (define g (gcd n d))
         (cond
            ( (= d 0) (error "The denominator can't be zero!"))
            ( (> (* n d) 0) (cons (abs (/ n g)) (abs (/ d g)) ) )
            ( (< (* n d) 0) (cons (* -1 (abs (/ n g))) (abs (/ d g)) ) ) ) ) 
+
+(define n1 (make-rat-improved -1 2))
+(define n2 (make-rat-improved -1 -2))
+(define n3 (make-rat-improved 1 -2))
+(define n4 (make-rat-improved 1 2))
 
 ; Exercise 2.2
 (define (make-point x-point y-point)
@@ -154,3 +155,43 @@
 
 (trace cons-2)
 (trace car-2)
+
+;Exercise 2.5
+(define (exp base n)
+    (cond
+        ((= n 0) 1)
+        (else (* base (exp base (- n 1))))))
+
+(define (divides? a b)
+    (cond
+        ((= 0 (remainder b a)) #t)
+        (else #f)))
+
+(define (logb base n)
+    (/ (log n) (log base)))
+
+(define (cons-int a b)
+    (* (exp 2 a) (exp 2 b)))
+
+
+;QUESTION: How could I make this an abstraction?
+(define (car-int x)
+    (cond  
+        ((divides? 3 x) (car-int (/ x 3)))
+        (else (logb 2 x))))
+
+(define (cdr-int x)
+    (cond  
+        ((divides? 2 x) (cdr-int (/ x 2)))
+        (else (logb 3 x))))
+
+;Exercise 2.6
+;QUESTION: What is going on
+(define zero
+    (lambda (f) (lambda (x) x)))
+
+(define (add-1 n)
+    (lambda (f) (lambda (x) (f ((n f) x)))))
+
+(define one
+    (lambda (f) (lambda (x) (f x))))
