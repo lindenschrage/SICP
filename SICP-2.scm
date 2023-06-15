@@ -1,4 +1,6 @@
 ; Representing rational numbers
+(define nil '())
+
 (define (error str)
     (display str))
 
@@ -46,10 +48,10 @@
         #t
         #f))
 
-(define one-half (make-rat 1 2))
-(define one-third (make-rat 1 3))
-(define one-fourth (make-rat 1 4))
-(define two-fourths (make-rat 2 4))
+;(define one-half (make-rat 1 2))
+;(define one-third (make-rat 1 3))
+;(define one-fourth (make-rat 1 4))
+;(define two-fourths (make-rat 2 4))
 
 
 ; Exercise 2.1
@@ -195,3 +197,142 @@
 
 (define one
     (lambda (f) (lambda (x) (f x))))
+
+(define two
+    (lambda (f) (lambda (x) (f (f x)))))
+
+(define three
+    (add-1 two))
+
+;2.14 Extended Exercise
+(define (add-interval x y)
+    (make-interval (+ (lower-bound x) (lower-bound y))
+                   (+ (upper-bound x) (upper-bound y))))
+
+(define (mul-interval x y)
+    (let ((p1 (* (lower-bound x) (lower-bound y)))
+          (p2 (* (lower-bound x) (upper-bound y)))
+          (p3 (* (upper-bound x) (lower-bound y)))
+          (p4 (* (upper-bound x) (lower-bound y))))
+    (make-interval (min p1 p2 p3 p4)
+                   (max p1 p2 p3 p4))))
+
+(define (div-interval-old x y)
+    (mul-interval
+    x
+    (make-interval (/ 1.0 (upper-bound y))
+                   (/ 1.0 (lower-bound y)))))
+
+
+(define (make-interval a b) (cons a b))
+
+;Exercise 2.7
+(define (upper-bound z) (cdr z))
+(define (lower-bound z) (car z))
+
+;Exercise 2.8
+(define (sub-interval x y)
+        (make-interval (- (lower-bound x) (upper-bound y))
+                       (- (upper-bound x) (lower-bound y))))
+
+;Exercise 2.10
+(define (div-interval x y)
+    (cond
+        ((<= (* (upper-bound y) (lower-bound y)) 0) (error "cannot divide by zero"))
+        (else (mul-interval x
+                            (make-interval (/ 1.0 (upper-bound y))
+                                            (/ 1.0 (lower-bound y)))))))
+
+;TODO: 2.11, 2.12, 2.13, 2.14, 2.15, 2.16
+
+;2.2 practice
+(define (list-ref items n)
+    (cond  
+        ((= n 0) (car items))
+        (else (list-ref (cdr items) (- n 1)))))
+
+(define (length items)
+    (cond
+        ((null? items) 0)
+        (else (+ 1 (length (cdr items))))))
+
+(define (length-1 items)
+    (define (length-iter curr_count items)
+        (cond 
+            ((null? items) curr_count)
+            (else (length-iter (+ 1 curr_count) (cdr items)))))
+    (length-iter 0 items))
+
+(define (append list1 list2)
+    (if (null? list1) 
+        list2
+        (cons (car list1) (append (cdr list1) list2))))
+
+;Exercise 2.17 
+(define (last-pair list1)
+    (if (= (length list1) 1) list1 (last-pair (cdr list1))))
+
+;Exercise 2.18 (tricky)
+(define (reverse items)
+    (define (reverse-iter items result)
+        (cond
+            ((null? items) result)
+            (else (reverse-iter (cdr items) (cons (car items) result)))))
+    (reverse-iter items '()))
+
+;Exercise 2.19
+(define us-coins (list 50 25 10 5 1))
+(define uk-coins (list 100 50 20 10 5 2 1 0.5))
+
+(define (cc amount coin-values)
+    (cond
+        ((= amount 0) 1)
+        ((or (< amount 0) (no-more? coin-values)) 0)
+        (else 
+        (+ (cc amount (except-first-denomination coin-values))
+           (cc (- amount (first-denomination coin-values)) coin-values)))))
+    
+(define (first-denomination coin-values)
+    (car coin-values))
+       
+(define (except-first-denomination coin-values)
+    (cdr coin-values))
+
+(define (no-more? coin-values)
+    (if (null? coin-values) #t #f))
+
+;Exercise 2.20
+(define (same-parity first . rest)
+    (let ((check? (if (odd? first) odd? even)))
+    (define (iter items result)
+        (cond
+            ((null? items) (reverse result))
+            (else (iter (cdr items) (if (check? (car items)) (cons (car items) result) result)))))
+    (iter (cons first rest) '())))
+
+;Mapping over lists
+(define (scale-list items factor)
+    (if (null? items) 
+        nil 
+        (cons (* (car items) factor) (scale-list (cdr items) factor))))
+
+(define (map proc items)
+    (if (null? items)
+        nil
+        (cons (proc (car items))
+            (map proc (cdr items)))))
+
+(define (scale-list-map items factor)
+    (map (lambda (x) (* x factor)) items))
+
+;Exercise 2.21
+(define (square-list-1 items)
+    (if (null? items)
+        nil
+        (cons (* (car items) (car items)) (square-list-1 (cdr items)))))
+
+(define (square-list-2 items)
+    (map (lambda (x) (* x x)) items))
+
+;Exercise 2.23
+
